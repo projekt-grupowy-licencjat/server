@@ -13,6 +13,8 @@ if(Boost_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
         add_executable(server src/main.cpp
                 src/server.h
-                src/tcp-connection.h)
+                src/tcp-connection.h
+                src/config/config.cpp
+                src/config/config.h)
         target_link_libraries(server ${Boost_LIBRARIES})
 endif()
