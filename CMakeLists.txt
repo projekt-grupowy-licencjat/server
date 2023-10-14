@@ -11,6 +11,8 @@ find_package(Boost)
 
 if(Boost_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
-        add_executable(server src/main.cpp)
-        target_link_libraries(asio_tut ${Boost_LIBRARIES})
+        add_executable(server src/main.cpp
+                src/server.h
+                src/tcp-connection.h)
+        target_link_libraries(server ${Boost_LIBRARIES})
 endif()
