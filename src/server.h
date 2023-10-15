@@ -5,7 +5,6 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio/placeholders.hpp>
-#include "tcp-connection.h"
 
 using boost::asio::ip::tcp;
 
@@ -19,20 +18,18 @@ public:
 
 private:
     void start_accept() {
-        tcp_connection::pointer new_connection = tcp_connection::create(io_context_);
+        acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
+            if (!ec) {
+                std::cout << "Session created on: "
+                          << socket.remote_endpoint().address().to_string()
+                          << ":" << socket.remote_endpoint().port() << '\n';
 
-        acceptor_.async_accept(new_connection->socket(),
-                               boost::bind(&tcp_server::handle_accept,
-                                           this,
-                                           new_connection,
-                                           boost::asio::placeholders::error));
-    }
+            } else {
+                std::cout << "error: " << ec.message() << std::endl;
+            }
 
-    void handle_accept(tcp_connection::pointer new_connection, const boost::system::error_code &error) {
-        if (!error) {
-            new_connection->start();
-        }
-        start_accept();
+            start_accept();
+        });
     }
 
     boost::asio::io_context &io_context_;
