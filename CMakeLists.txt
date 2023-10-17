@@ -11,11 +11,20 @@ find_package(Boost)
 
 if(Boost_FOUND)
         include_directories(${Boost_INCLUDE_DIRS})
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpqxx -lpq")
+        set(PQXX /usr/local/include/pqxx)
+        find_library(PQXX_LIB pqxx)
+        find_library(PQ_LIB pq)
+
         add_executable(server src/main.cpp
                 src/server.h
                 src/config/config.cpp
                 src/config/config.h
                 src/session-handler.h
-                src/session-handler.cpp)
-        target_link_libraries(server ${Boost_LIBRARIES})
+                src/session-handler.cpp
+                src/item/item.h
+                src/db/db.h
+                src/db/db.cpp)
+        target_link_libraries(server ${Boost_LIBRARIES} ${PQXX_LIB} ${PQ_LIB})
 endif()
