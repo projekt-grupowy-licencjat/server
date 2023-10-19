@@ -5,6 +5,7 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/bind.hpp>
 #include <boost/asio/placeholders.hpp>
+#include "session-handler.h"
 
 using boost::asio::ip::tcp;
 
@@ -23,7 +24,7 @@ private:
                 std::cout << "Session created on: "
                           << socket.remote_endpoint().address().to_string()
                           << ":" << socket.remote_endpoint().port() << '\n';
-
+                std::make_shared<Session>(std::move(socket))->run();
             } else {
                 std::cout << "error: " << ec.message() << std::endl;
             }

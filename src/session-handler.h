@@ -6,9 +6,9 @@
 
 using boost::asio::ip::tcp;
 
-class SessionHandler : public std::enable_shared_from_this<SessionHandler> {
+class Session : public std::enable_shared_from_this<Session> {
 public:
-    explicit SessionHandler(tcp::socket socket) : m_socket(std::move(socket)) {}
+    explicit Session(tcp::socket socket) : m_socket(std::move(socket)) {}
     void run();
 private:
     void wait_for_request();

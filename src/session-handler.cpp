@@ -1,9 +1,9 @@
 #include "session-handler.h"
 
-void SessionHandler::run() {
+void Session::run() {
     this->wait_for_request();
 }
 
-void SessionHandler::wait_for_request() {
+void Session::wait_for_request() {
 
 }

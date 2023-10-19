@@ -23,8 +23,8 @@ if(Boost_FOUND)
                 src/config/config.h
                 src/session-handler.h
                 src/session-handler.cpp
-                src/item/item.h
-                src/db/db.h
-                src/db/db.cpp)
+                src/equipment/equipment.h
+                src/equipment/equipment.cpp
+        )
         target_link_libraries(server ${Boost_LIBRARIES} ${PQXX_LIB} ${PQ_LIB})
 endif()
