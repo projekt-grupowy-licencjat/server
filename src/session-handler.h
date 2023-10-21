@@ -13,6 +13,7 @@ public:
 private:
     void wait_for_request();
     tcp::socket m_socket;
+    boost::asio::streambuf m_buffer;
 };
 
 #endif //SERVER_SESSION_HANDLER_H
