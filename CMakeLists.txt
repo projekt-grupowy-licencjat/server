@@ -23,6 +23,8 @@ if(Boost_FOUND)
                 src/config/config.h
                 src/equipment/equipment.h
                 src/equipment/equipment.cpp
+                src/handler.h
+                src/handler.cpp
         )
         target_link_libraries(server ${Boost_LIBRARIES} ${PQXX_LIB} ${PQ_LIB})
 endif()
