@@ -21,8 +21,6 @@ if(Boost_FOUND)
                 src/server.h
                 src/config/config.cpp
                 src/config/config.h
-                src/session-handler.h
-                src/session-handler.cpp
                 src/equipment/equipment.h
                 src/equipment/equipment.cpp
         )

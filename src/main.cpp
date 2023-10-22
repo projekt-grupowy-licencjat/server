@@ -17,7 +17,7 @@ int main() {
     // TODO: Send equipment and other stuff when it changes
     try {
         boost::asio::io_context io_context;
-        tcp_server server(io_context);
+        UDPServer server(io_context);
         io_context.run();
     }
     catch (std::exception &e) {

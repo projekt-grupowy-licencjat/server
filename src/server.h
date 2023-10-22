@@ -1,40 +1,51 @@
 #ifndef SERVER_SERVER_H
 #define SERVER_SERVER_H
 
-#include <boost/asio/impl/io_context.ipp>
-#include <boost/asio/ip/tcp.hpp>
+#include <string>
+#include <iostream>
+#include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/asio/placeholders.hpp>
-#include "session-handler.h"
 
-using boost::asio::ip::tcp;
+using boost::asio::ip::udp;
 
-class tcp_server {
+class UDPServer {
 public:
-    explicit tcp_server(boost::asio::io_context &io_context)
-            : io_context_(io_context),
-              acceptor_(io_context, tcp::endpoint(tcp::v4(), 10000)) { // TODO: Change to be configurable
-        start_accept();
+    explicit UDPServer(boost::asio::io_service& io_service)
+            : _socket(io_service, udp::endpoint(udp::v4(), 10000)) // TODO: make configurable
+    {
+        startReceive();
     }
-
 private:
-    void start_accept() {
-        acceptor_.async_accept([this](boost::system::error_code ec, tcp::socket socket) {
-            if (!ec) {
-                std::cout << "Session created on: "
-                          << socket.remote_endpoint().address().to_string()
-                          << ":" << socket.remote_endpoint().port() << '\n';
-                std::make_shared<Session>(std::move(socket))->run();
-            } else {
-                std::cout << "error: " << ec.message() << std::endl;
-            }
-
-            start_accept();
-        });
+    void startReceive() {
+        _socket.async_receive_from(
+                boost::asio::buffer(_recvBuffer), _remoteEndpoint,
+                boost::bind(&UDPServer::handleReceive, this,
+                            boost::asio::placeholders::error,
+                            boost::asio::placeholders::bytes_transferred));
     }
 
-    boost::asio::io_context &io_context_;
-    tcp::acceptor acceptor_;
+    void handleReceive(const boost::system::error_code& error,
+                       std::size_t bytes_transferred) {
+        if (!error || error == boost::asio::error::message_size) {
+
+            auto message = std::make_shared<std::string>("Hello, World\n");
+
+            _socket.async_send_to(boost::asio::buffer(*message), _remoteEndpoint,
+                                  boost::bind(&UDPServer::handleSend, this, message,
+                                              boost::asio::placeholders::error,
+                                              boost::asio::placeholders::bytes_transferred));
+        }
+    }
+
+    void handleSend(std::shared_ptr<std::string> message,
+                    const boost::system::error_code& ec,
+                    std::size_t bytes_transferred) {
+        startReceive();
+    }
+
+    udp::socket _socket;
+    udp::endpoint _remoteEndpoint;
+    std::array<char, 1024> _recvBuffer;
 };
 
 #endif //SERVER_SERVER_H
